@@ -14,12 +14,12 @@ from urllib.parse import parse_qs, urlparse
 
 import pandas as pd
 
-from arges import run_arges_like
-from evaluation import edges_to_frame
-from h2pc import run_h2pc
-from make_head_to_head_results import render_head_to_head_table
-from mmhc import run_mmhc
-from preprocessing import DEFAULT_DATASET_PATH
+from .arges import run_arges_like
+from .evaluation import edges_to_frame
+from .h2pc import run_h2pc
+from .make_head_to_head_results import render_head_to_head_table
+from .mmhc import run_mmhc
+from .preprocessing import DEFAULT_DATASET_PATH
 
 
 class JobStore:
@@ -71,6 +71,10 @@ def _run_job(job_store: JobStore, job_id: str) -> None:
 
         out_dir = Path(output_dir).expanduser().resolve() if output_dir else (job_store.output_root / job_id)
         out_dir.mkdir(parents=True, exist_ok=True)
+        edges_dir = out_dir / "edges"
+        figures_dir = out_dir / "figures"
+        edges_dir.mkdir(parents=True, exist_ok=True)
+        figures_dir.mkdir(parents=True, exist_ok=True)
 
         outcomes = [
             run_mmhc(file_path=file_path, sample_size=sample_size),
@@ -82,11 +86,11 @@ def _run_job(job_store: JobStore, job_id: str) -> None:
         summary_csv = out_dir / "results_summary.csv"
         summary_df.to_csv(summary_csv, index=False)
 
-        edges_to_frame(outcomes[0]["edges"]).to_csv(out_dir / "mmhc_edges.csv", index=False)
-        edges_to_frame(outcomes[1]["edges"]).to_csv(out_dir / "h2pc_edges.csv", index=False)
-        edges_to_frame(outcomes[2]["edges"]).to_csv(out_dir / "arges_edges.csv", index=False)
+        edges_to_frame(outcomes[0]["edges"]).to_csv(edges_dir / "mmhc_edges.csv", index=False)
+        edges_to_frame(outcomes[1]["edges"]).to_csv(edges_dir / "h2pc_edges.csv", index=False)
+        edges_to_frame(outcomes[2]["edges"]).to_csv(edges_dir / "arges_edges.csv", index=False)
 
-        png_path = out_dir / "head_to_head_results.png"
+        png_path = figures_dir / "head_to_head_results.png"
         render_head_to_head_table(summary_csv=summary_csv, output_png=png_path)
 
         job_store.update(
@@ -97,9 +101,9 @@ def _run_job(job_store: JobStore, job_id: str) -> None:
                 "output_dir": str(out_dir),
                 "results_summary_csv": str(summary_csv),
                 "head_to_head_png": str(png_path),
-                "mmhc_edges_csv": str(out_dir / "mmhc_edges.csv"),
-                "h2pc_edges_csv": str(out_dir / "h2pc_edges.csv"),
-                "arges_edges_csv": str(out_dir / "arges_edges.csv"),
+                "mmhc_edges_csv": str(edges_dir / "mmhc_edges.csv"),
+                "h2pc_edges_csv": str(edges_dir / "h2pc_edges.csv"),
+                "arges_edges_csv": str(edges_dir / "arges_edges.csv"),
             },
             summary=summary_df.to_dict(orient="records"),
         )
@@ -264,4 +268,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

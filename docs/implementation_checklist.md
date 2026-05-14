@@ -12,7 +12,7 @@ Build a consistent experiment pipeline for comparing:
 on the lung cancer dataset in this repository.
 
 Official dataset:
-- [`/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
+- [`../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
 
 Target variable:
 - `Cause of Death`
@@ -28,7 +28,7 @@ Core rules:
 ### 1. Add shared preprocessing module
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/preprocessing.py`](/Users/seong/Desktop/Programming/BBN/preprocessing.py)
+- [`../bbn_hybrid_learner/preprocessing.py`](../bbn_hybrid_learner/preprocessing.py)
 
 Checklist:
 - [ ] Add `load_dataset(file_path)` to read the recategorized CSV
@@ -47,7 +47,7 @@ Definition of done:
 ### 2. Add shared evaluation module
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/evaluation.py`](/Users/seong/Desktop/Programming/BBN/evaluation.py)
+- [`../bbn_hybrid_learner/evaluation.py`](../bbn_hybrid_learner/evaluation.py)
 
 Checklist:
 - [ ] Add helper to measure structure-learning runtime
@@ -77,12 +77,12 @@ Definition of done:
 ### 3. Refactor MMHC experiment
 
 File to update:
-- [`/Users/seong/Desktop/Programming/BBN/mmhc.py`](/Users/seong/Desktop/Programming/BBN/mmhc.py)
+- [`../bbn_hybrid_learner/mmhc.py`](../bbn_hybrid_learner/mmhc.py)
 
 Checklist:
 - [ ] Remove duplicated preprocessing logic from the script
-- [ ] Import shared functions from [`/Users/seong/Desktop/Programming/BBN/preprocessing.py`](/Users/seong/Desktop/Programming/BBN/preprocessing.py)
-- [ ] Import shared evaluation helpers from [`/Users/seong/Desktop/Programming/BBN/evaluation.py`](/Users/seong/Desktop/Programming/BBN/evaluation.py)
+- [ ] Import shared functions from [`../bbn_hybrid_learner/preprocessing.py`](../bbn_hybrid_learner/preprocessing.py)
+- [ ] Import shared evaluation helpers from [`../bbn_hybrid_learner/evaluation.py`](../bbn_hybrid_learner/evaluation.py)
 - [ ] Replace the current non-`bnlearn` MMHC path with a `bnlearn`-backed MMHC path
 - [ ] Keep MMHC-specific logic limited to calling `bnlearn`, parsing learned edges, and BN construction
 - [ ] Remove debug prints like `print("here")`
@@ -96,7 +96,7 @@ Definition of done:
 ### 4. Implement H2PC experiment
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/h2pc.py`](/Users/seong/Desktop/Programming/BBN/h2pc.py)
+- [`../bbn_hybrid_learner/h2pc.py`](../bbn_hybrid_learner/h2pc.py)
 
 Checklist:
 - [ ] Use the shared preprocessing pipeline
@@ -114,7 +114,7 @@ Definition of done:
 ### 5. Refactor ARGES-like adaptive experiment
 
 File to update:
-- [`/Users/seong/Desktop/Programming/BBN/arges.py`](/Users/seong/Desktop/Programming/BBN/arges.py)
+- [`../bbn_hybrid_learner/arges.py`](../bbn_hybrid_learner/arges.py)
 
 Checklist:
 - [ ] Remove duplicated preprocessing code
@@ -136,7 +136,7 @@ Definition of done:
 ### 6. Add bnlearn integration layer
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/bnlearn_adapter.py`](/Users/seong/Desktop/Programming/BBN/bnlearn_adapter.py)
+- [`../bbn_hybrid_learner/bnlearn_adapter.py`](../bbn_hybrid_learner/bnlearn_adapter.py)
 
 Checklist:
 - [ ] Add one adapter function for `MMHC`
@@ -152,7 +152,7 @@ Definition of done:
 ### 7. Add experiment runner
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/run_experiments.py`](/Users/seong/Desktop/Programming/BBN/run_experiments.py)
+- [`../bbn_hybrid_learner/run_experiments.py`](../bbn_hybrid_learner/run_experiments.py)
 
 Checklist:
 - [ ] Run MMHC
@@ -164,7 +164,7 @@ Checklist:
 - [ ] Print a compact console summary
 
 Output files:
-- [ ] [`/Users/seong/Desktop/Programming/BBN/results_summary.csv`](/Users/seong/Desktop/Programming/BBN/results_summary.csv)
+- [ ] [`../results/results_summary.csv`](../results/results_summary.csv)
 - [ ] optional learned-edge files for each method
 
 Definition of done:
@@ -174,9 +174,9 @@ Definition of done:
 ### 8. Save learned structures
 
 Files to create during runs:
-- [`/Users/seong/Desktop/Programming/BBN/mmhc_edges.csv`](/Users/seong/Desktop/Programming/BBN/mmhc_edges.csv)
-- [`/Users/seong/Desktop/Programming/BBN/h2pc_edges.csv`](/Users/seong/Desktop/Programming/BBN/h2pc_edges.csv)
-- [`/Users/seong/Desktop/Programming/BBN/arges_edges.csv`](/Users/seong/Desktop/Programming/BBN/arges_edges.csv)
+- [`../results/edges/mmhc_edges.csv`](../results/edges/mmhc_edges.csv)
+- [`../results/edges/h2pc_edges.csv`](../results/edges/h2pc_edges.csv)
+- [`../results/edges/arges_edges.csv`](../results/edges/arges_edges.csv)
 
 Checklist:
 - [ ] Save parent-child edge list for each algorithm
@@ -189,7 +189,7 @@ Definition of done:
 ### 9. Add results analysis notebook or script
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/analyze_results.py`](/Users/seong/Desktop/Programming/BBN/analyze_results.py)
+- [`../bbn_hybrid_learner/analyze_results.py`](../bbn_hybrid_learner/analyze_results.py)
 
 Checklist:
 - [ ] Read `results_summary.csv`
@@ -209,7 +209,7 @@ Definition of done:
 ### 10. Write short methods/results summary
 
 File to create:
-- [`/Users/seong/Desktop/Programming/BBN/internal_report.md`](/Users/seong/Desktop/Programming/BBN/internal_report.md)
+- [`../docs/internal_report.md`](../docs/internal_report.md)
 
 Checklist:
 - [ ] Describe dataset choice
@@ -245,23 +245,23 @@ Definition of done:
 ## Team Split Suggestion
 
 - Shared pipeline owner:
-  [`/Users/seong/Desktop/Programming/BBN/preprocessing.py`](/Users/seong/Desktop/Programming/BBN/preprocessing.py),
-  [`/Users/seong/Desktop/Programming/BBN/evaluation.py`](/Users/seong/Desktop/Programming/BBN/evaluation.py),
-  [`/Users/seong/Desktop/Programming/BBN/bnlearn_adapter.py`](/Users/seong/Desktop/Programming/BBN/bnlearn_adapter.py),
-  [`/Users/seong/Desktop/Programming/BBN/run_experiments.py`](/Users/seong/Desktop/Programming/BBN/run_experiments.py)
+  [`../bbn_hybrid_learner/preprocessing.py`](../bbn_hybrid_learner/preprocessing.py),
+  [`../bbn_hybrid_learner/evaluation.py`](../bbn_hybrid_learner/evaluation.py),
+  [`../bbn_hybrid_learner/bnlearn_adapter.py`](../bbn_hybrid_learner/bnlearn_adapter.py),
+  [`../bbn_hybrid_learner/run_experiments.py`](../bbn_hybrid_learner/run_experiments.py)
 
 - MMHC owner:
-  [`/Users/seong/Desktop/Programming/BBN/mmhc.py`](/Users/seong/Desktop/Programming/BBN/mmhc.py)
+  [`../bbn_hybrid_learner/mmhc.py`](../bbn_hybrid_learner/mmhc.py)
 
 - H2PC owner:
-  [`/Users/seong/Desktop/Programming/BBN/h2pc.py`](/Users/seong/Desktop/Programming/BBN/h2pc.py)
+  [`../bbn_hybrid_learner/h2pc.py`](../bbn_hybrid_learner/h2pc.py)
 
 - ARGES-like owner:
-  [`/Users/seong/Desktop/Programming/BBN/arges.py`](/Users/seong/Desktop/Programming/BBN/arges.py)
+  [`../bbn_hybrid_learner/arges.py`](../bbn_hybrid_learner/arges.py)
 
 - Analysis/report owner:
-  [`/Users/seong/Desktop/Programming/BBN/analyze_results.py`](/Users/seong/Desktop/Programming/BBN/analyze_results.py),
-  [`/Users/seong/Desktop/Programming/BBN/internal_report.md`](/Users/seong/Desktop/Programming/BBN/internal_report.md)
+  [`../bbn_hybrid_learner/analyze_results.py`](../bbn_hybrid_learner/analyze_results.py),
+  [`../docs/internal_report.md`](../docs/internal_report.md)
 
 ## Final Success Criteria
 

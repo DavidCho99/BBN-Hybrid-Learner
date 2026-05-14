@@ -8,18 +8,18 @@ import tempfile
 import time
 from pathlib import Path
 
-from evaluation import (
+from .evaluation import (
     build_bayesian_network,
     compute_bic_score,
     compute_prediction_metrics,
     fit_bayesian_network,
     summarize_result,
 )
-from preprocessing import DEFAULT_DATASET_PATH, TARGET_COLUMN, prepare_data
+from .preprocessing import DEFAULT_DATASET_PATH, TARGET_COLUMN, prepare_data
 
-ROOT = Path(__file__).resolve().parent
-R_ARGES_DRIVER_PATH = ROOT / "r_arges_driver.R"
-LOCAL_R_LIBS_PATH = ROOT / "r_libs"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+R_ARGES_DRIVER_PATH = PROJECT_ROOT / "r" / "r_arges_driver.R"
+LOCAL_R_LIBS_PATH = PROJECT_ROOT / "r_libs"
 FALLBACK_RSCRIPT_PATHS = [
     Path("/opt/anaconda3/bin/Rscript"),
 ]

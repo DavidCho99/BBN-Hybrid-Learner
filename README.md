@@ -1,161 +1,130 @@
-# BBN Source Code Organization
+# BBN Hybrid Learner
 
-BBN is an experiment workspace for comparing hybrid Bayesian Belief Network
-structure-learning methods on a recategorized lung cancer dataset. The project
-keeps data preparation, R-backed structure learning, Bayesian-network fitting,
-evaluation, and reporting in separate files so that each algorithm is compared
-under the same experimental protocol.
+BBN Hybrid Learner compares hybrid Bayesian Belief Network structure-learning
+methods on a recategorized lung cancer dataset. The repository is organized so
+that source code, R drivers, data, saved results, and project writeups each live
+in their own folder.
 
-The main comparison currently covers:
+The current comparison includes:
 
 - `MMHC` from `bnlearn`
 - `H2PC` from `bnlearn`
 - `ARGES-like (adaptive triples)` using an `HPC` restriction graph from
   `bnlearn` and adaptive restricted `GES` from `pcalg`
 
-## Layers
+## Project Summary
 
-The repository is organized as a small layered pipeline:
+This project asks which hybrid structure-learning algorithm provides the best
+balance of model fit, computational efficiency, structural interpretability,
+and predictive performance for a large-scale categorical lung cancer dataset.
 
-- **Data layer**: stores the recategorized lung cancer dataset and generated
-  experiment artifacts.
-- **Preprocessing layer**: provides one canonical cleaning, encoding, and
-  train/test split path shared by every method.
-- **R bridge layer**: isolates calls into `bnlearn` and `pcalg`, then converts
-  learned structures into Python-readable edge lists.
-- **Algorithm layer**: keeps one Python entry point per structure-learning
-  method.
-- **Evaluation layer**: builds and fits Bayesian networks, computes scores and
-  predictive metrics, and standardizes result rows.
-- **Orchestration layer**: runs all methods, saves summary tables, exports edge
-  lists, and supports repeated validation runs.
-- **Presentation/API layer**: renders report-ready visuals and exposes a local
-  HTTP API for running experiments.
+The working dataset contains `191,993` records and `11` categorical variables.
+The target variable is `Cause of Death`, and all methods use the same `80/20`
+train/test split.
 
-## Target Environments
+The poster analysis found that `H2PC` performed best overall. It produced the
+strongest model fit, the highest prediction accuracy, and a richer learned
+network than `MMHC`. `MMHC` was faster, but it produced a sparse graph.
+`ARGES-like` did not learn meaningful dependencies in the current categorical
+setting, suggesting that this pipeline may be better suited to continuous or
+differently encoded data.
 
-The project uses both Python and R.
+The broader goal is to improve the reliability of interpretable Bayesian
+network models for clinical decision support in lung cancer analysis.
 
-- **Python**: shared preprocessing, experiment orchestration, Bayesian-network
-  fitting, scoring, prediction metrics, image rendering, and the local API.
-- **R**: structure learning through `bnlearn` and `pcalg`.
-- **Generated artifacts**: CSV summaries, learned-edge files, PNG tables, and
-  Markdown report/poster drafts.
-
-Environment-specific rule:
-
-- Python modules should not duplicate preprocessing logic.
-- R-specific package calls should stay in the R driver files or the Python
-  adapter that invokes them.
-- New evaluation metrics should be added to `evaluation.py`, not repeated in
-  individual algorithm scripts.
-
-## Experiment Pipeline
-
-The full experiment flow is:
-
-1. `preprocessing.py` loads `Recategorized_Cleaned_Lung_Cancer_dataset.csv`.
-2. Missing `Cancer Cell Type` values are filled with `Unknown`.
-3. All columns are treated as categorical values.
-4. Data is encoded consistently and split into train/test sets with a fixed
-   random seed.
-5. `mmhc.py`, `h2pc.py`, and `arges.py` learn candidate structures.
-6. `evaluation.py` builds a `pgmpy` Bayesian network, fits parameters, and
-   computes BIC, runtime, edge count, and predictive metrics.
-7. `run_experiments.py` writes `results_summary.csv` and one edge-list CSV per
-   method.
-8. `make_head_to_head_results.py` can render a report-ready comparison table.
-
-All methods should use the same dataset, preprocessing function, train/test
-split, and result schema.
-
-## Repository Map
+## Folder Layout
 
 ```text
 .
 ├── README.md
-├── preprocessing.py              # canonical dataset loading, cleaning, encoding, split
-├── evaluation.py                 # BN construction, fitting, scoring, metrics
-├── bnlearn_adapter.py            # Python wrapper around the bnlearn R driver
-├── r_bnlearn_driver.R            # MMHC, H2PC, and HPC calls through bnlearn
-├── r_arges_driver.R              # ARGES-like adaptive restricted GES through pcalg
-├── mmhc.py                       # MMHC experiment entry point
-├── h2pc.py                       # H2PC experiment entry point
-├── arges.py                      # ARGES-like adaptive triples entry point
-├── run_experiments.py            # runs all three methods and saves summaries
-├── validate_experiments.py       # repeated validation runs and aggregate metrics
-├── make_head_to_head_results.py  # renders a PNG comparison table
-├── bbn_api.py                    # local HTTP API for async experiment jobs
-├── results_summary.csv           # latest summary table
-├── mmhc_edges.csv                # latest MMHC learned edge list
-├── h2pc_edges.csv                # latest H2PC learned edge list
-├── arges_edges.csv               # latest ARGES-like learned edge list
-├── head_to_head_results.png      # rendered result table
-└── *.md                          # project notes, poster drafts, and discussion summaries
+├── requirements.txt
+├── bbn_hybrid_learner/
+│   ├── __init__.py
+│   ├── preprocessing.py
+│   ├── evaluation.py
+│   ├── bnlearn_adapter.py
+│   ├── mmhc.py
+│   ├── h2pc.py
+│   ├── arges.py
+│   ├── run_experiments.py
+│   ├── validate_experiments.py
+│   ├── make_head_to_head_results.py
+│   └── bbn_api.py
+├── data/
+│   └── Recategorized_Cleaned_Lung_Cancer_dataset.csv
+├── r/
+│   ├── r_bnlearn_driver.R
+│   └── r_arges_driver.R
+├── results/
+│   ├── results_summary.csv
+│   ├── edges/
+│   │   ├── mmhc_edges.csv
+│   │   ├── h2pc_edges.csv
+│   │   └── arges_edges.csv
+│   └── figures/
+│       └── head_to_head_results.png
+└── docs/
+    ├── discussion_summary_paper.md
+    ├── implementation_checklist.md
+    ├── poster_content_from_results.md
+    └── poster_draft.md
 ```
 
-Local-only folders such as `venv/`, `r_libs/`, and `__pycache__/` are not part
-of the source layout and should not be uploaded.
+Local-only folders such as `venv/`, `r_libs/`, and `__pycache__/` are ignored
+and should not be uploaded.
 
-## Core Files
+## Layers
 
-### `preprocessing.py`
+- **Data layer**: `data/` contains the working dataset.
+- **Python package layer**: `bbn_hybrid_learner/` contains preprocessing,
+  algorithm runners, evaluation logic, visualization, and the local API.
+- **R bridge layer**: `r/` contains the R scripts that call `bnlearn` and
+  `pcalg`.
+- **Results layer**: `results/` contains generated CSV summaries, edge lists,
+  and rendered figures.
+- **Documentation layer**: `docs/` contains planning notes, poster drafts, and
+  writeups.
 
-Defines the shared preprocessing contract:
+## Pipeline
 
-- default dataset path
-- target column: `Cause of Death`
-- missing-value handling
-- category mapping
-- categorical integer encoding
-- fixed train/test split
-- `PreparedData` container used by the experiment scripts
+1. `bbn_hybrid_learner/preprocessing.py` loads the dataset from `data/`.
+2. Missing `Cancer Cell Type` values are filled with `Unknown`.
+3. All variables are treated as categorical.
+4. A fixed train/test split is shared by every method.
+5. `mmhc.py`, `h2pc.py`, and `arges.py` learn candidate structures.
+6. `evaluation.py` builds and fits `pgmpy` Bayesian networks.
+7. `run_experiments.py` saves the summary table and learned edges under
+   `results/`.
+8. `make_head_to_head_results.py` renders a PNG comparison table.
 
-### `bnlearn_adapter.py` and `r_bnlearn_driver.R`
+## Core Modules
 
-Provide the bridge between Python and `bnlearn`.
+### `bbn_hybrid_learner/preprocessing.py`
 
-Python writes the train split to a temporary CSV, calls `Rscript`, and reads the
-learned edge list back into a standard `list[tuple[str, str]]` format.
+Defines the shared dataset path, target column, missing-value handling,
+categorical encoding, and train/test split.
 
-Supported `bnlearn` methods:
+### `bbn_hybrid_learner/evaluation.py`
 
-- `mmhc`
-- `h2pc`
-- `hpc`
+Builds Bayesian networks, validates DAGs, fits parameters, computes BIC, and
+reports prediction metrics for `Cause of Death`.
 
-### `arges.py` and `r_arges_driver.R`
+### `bbn_hybrid_learner/bnlearn_adapter.py`
 
-Run the ARGES-like path:
+Writes Python data frames to temporary CSV files, calls `Rscript`, and returns
+learned structures as Python edge lists.
 
-- learn an `HPC` skeleton with `bnlearn`
-- convert the skeleton complement into `fixedGaps`
-- run `pcalg::ges(..., adaptive = "triples")`
-- export the CPDAG, representative DAG, and skeleton edge lists
+### `bbn_hybrid_learner/mmhc.py`, `h2pc.py`, and `arges.py`
 
-This project intentionally labels the method as `ARGES-like (adaptive triples)`
-rather than claiming a strict reproduction of every ARGES variant.
+Each file owns one structure-learning method and returns the same result schema
+so the methods can be compared directly.
 
-### `evaluation.py`
+### `r/`
 
-Centralizes evaluation behavior:
+Contains the R-only structure-learning calls:
 
-- duplicate-edge normalization
-- DAG validation
-- Bayesian-network construction with `pgmpy`
-- parameter fitting with Bayesian estimation and MLE fallback
-- BIC scoring
-- prediction metrics for `Cause of Death`
-- standard result-row formatting
-
-### `run_experiments.py`
-
-Runs all three algorithms using the same input data and writes:
-
-- `results_summary.csv`
-- `mmhc_edges.csv`
-- `h2pc_edges.csv`
-- `arges_edges.csv`
+- `r_bnlearn_driver.R`: `mmhc`, `h2pc`, and `hpc`
+- `r_arges_driver.R`: adaptive restricted `GES` with `adaptive = "triples"`
 
 ## Setup
 
@@ -179,30 +148,32 @@ that folder before running experiments.
 
 ## Running Experiments
 
-Run the full comparison on the default dataset:
+Run the full comparison:
 
 ```bash
-python run_experiments.py
+python -m bbn_hybrid_learner.run_experiments
 ```
 
 Run a smaller smoke test:
 
 ```bash
-python run_experiments.py --sample-size 5000 --output-dir runs/smoke
+python -m bbn_hybrid_learner.run_experiments \
+  --sample-size 5000 \
+  --output-dir results/smoke
 ```
 
 Render the head-to-head result table:
 
 ```bash
-python make_head_to_head_results.py \
-  --summary-csv results_summary.csv \
-  --output head_to_head_results.png
+python -m bbn_hybrid_learner.make_head_to_head_results
 ```
 
 Run repeated validation:
 
 ```bash
-python validate_experiments.py --repeats 5 --output-dir runs/validation
+python -m bbn_hybrid_learner.validate_experiments \
+  --repeats 5 \
+  --output-dir results/validation
 ```
 
 ## Local API
@@ -210,7 +181,7 @@ python validate_experiments.py --repeats 5 --output-dir runs/validation
 Start the API server:
 
 ```bash
-python bbn_api.py --host 127.0.0.1 --port 8000
+python -m bbn_hybrid_learner.bbn_api --host 127.0.0.1 --port 8000
 ```
 
 Useful endpoints:
@@ -232,42 +203,60 @@ curl -X POST http://127.0.0.1:8000/run \
 
 ## Current Result Snapshot
 
-The latest saved summary compares all three methods on the recategorized lung
-cancer dataset.
+The latest saved summary is in `results/results_summary.csv`.
 
-| Method | BIC | Total Runtime (s) | Edge Count | Prediction Accuracy |
-|---|---:|---:|---:|---:|
-| MMHC | -1,528,163.0048 | 16.9972 | 7 | 0.7044 |
-| H2PC | -1,380,635.0229 | 23.9098 | 25 | 0.7226 |
-| ARGES-like | -1,703,922.1521 | 21.4393 | 0 | 0.5595 |
+| Method | BIC | Total Runtime (s) | Edge Count | Prediction Accuracy | AUC |
+|---|---:|---:|---:|---:|---:|
+| MMHC | -1,528,163.0048 | 16.9972 | 7 | 0.7044 | 0.7047 |
+| H2PC | -1,380,635.0229 | 23.9098 | 25 | 0.7226 | 0.7922 |
+| ARGES-like | -1,703,922.1521 | 21.4393 | 0 | 0.5595 | 0.5000 |
 
 In this run, `H2PC` produced the best BIC and prediction accuracy, while `MMHC`
 was the fastest method. The ARGES-like run produced an empty final graph under
 the current categorical-data setup.
 
+## Follow-Up Research
+
+The next research step is to use the same lung cancer dataset with additional
+machine-learning models and compare those results against the Bayesian network
+methods in this repository.
+
+The follow-up comparison should keep the same preprocessing, target variable,
+and train/test split, then evaluate models such as logistic regression, random
+forest, gradient boosting or XGBoost, support vector machines, and neural
+network classifiers.
+
+The purpose of this follow-up work is to compare:
+
+- predictive performance, using accuracy, balanced accuracy, macro F1, AUC, and
+  log loss
+- runtime and scalability on the same large categorical dataset
+- interpretability, especially BBN graph structure versus feature-importance or
+  black-box model explanations
+- clinical usefulness for understanding lung cancer progression and treatment
+  outcomes
+
+This would turn the project from a comparison of hybrid Bayesian network
+structure learners into a broader study of interpretable probabilistic models
+versus standard machine-learning baselines on the same medical dataset.
+
 ## Upload Notes
 
-Before uploading the repository:
-
 - Keep source files, result summaries, report drafts, and presentation-ready
-  images if they are needed for the project submission.
+  images if they are needed for submission.
 - Do not upload `venv/`, `r_libs/`, `__pycache__/`, `.DS_Store`, or temporary
   run folders.
 - Include the dataset only if its license, class policy, and privacy rules allow
   redistribution. Otherwise, keep the CSV outside the repository and pass it
   with `--file-path`.
-- Re-run `python run_experiments.py` after any change to preprocessing,
-  algorithm logic, or evaluation metrics.
+- Re-run `python -m bbn_hybrid_learner.run_experiments` after changes to
+  preprocessing, algorithm logic, or evaluation metrics.
 
 ## Contribution Rules
 
-When adding new code:
-
-- Shared data-cleaning changes belong in `preprocessing.py`.
-- Shared scoring or metric changes belong in `evaluation.py`.
-- New R method calls should be isolated behind a small Python adapter and an R
-  driver script.
+- Shared data-cleaning changes belong in `bbn_hybrid_learner/preprocessing.py`.
+- Shared scoring or metric changes belong in `bbn_hybrid_learner/evaluation.py`.
+- New R method calls should stay behind a Python adapter and an R driver script.
 - New algorithms should expose a `run_<method>()` function and return the same
-  result structure used by `mmhc.py`, `h2pc.py`, and `arges.py`.
-- Generated experiment outputs should use clear names and should not overwrite
-  source files.
+  result structure used by the current method files.
+- Generated experiment outputs should go under `results/`.

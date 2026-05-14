@@ -6,13 +6,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from arges import run_arges_like
-from h2pc import run_h2pc
-from mmhc import run_mmhc
-from preprocessing import DEFAULT_DATASET_PATH
+from .arges import run_arges_like
+from .h2pc import run_h2pc
+from .mmhc import run_mmhc
+from .preprocessing import DEFAULT_DATASET_PATH, PROJECT_ROOT
 
 
-ROOT = Path(__file__).resolve().parent
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "results" / "validation"
 
 
 METRIC_COLUMNS = [
@@ -50,7 +50,7 @@ def main() -> None:
     )
     parser.add_argument("--file-path", default=str(DEFAULT_DATASET_PATH))
     parser.add_argument("--sample-size", type=int, default=None)
-    parser.add_argument("--output-dir", default=str(ROOT))
+    parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     parser.add_argument("--repeats", type=int, default=5)
     args = parser.parse_args()
 

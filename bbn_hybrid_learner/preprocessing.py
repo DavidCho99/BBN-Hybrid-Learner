@@ -8,8 +8,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-ROOT = Path(__file__).resolve().parent
-DEFAULT_DATASET_PATH = ROOT / "Recategorized_Cleaned_Lung_Cancer_dataset.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATASET_PATH = PROJECT_ROOT / "data" / "Recategorized_Cleaned_Lung_Cancer_dataset.csv"
 TARGET_COLUMN = "Cause of Death"
 DEFAULT_TEST_SIZE = 0.2
 DEFAULT_RANDOM_STATE = 42

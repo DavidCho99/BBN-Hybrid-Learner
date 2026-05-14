@@ -22,10 +22,10 @@ At the time of discussion, MMHC was assigned to Gwangseong Cho, while the remain
 
 Inspection of the project workspace showed the following relevant files:
 
-- [`/Users/seong/Desktop/Programming/BBN/mmhc.py`](/Users/seong/Desktop/Programming/BBN/mmhc.py)
-- [`/Users/seong/Desktop/Programming/BBN/arges.py`](/Users/seong/Desktop/Programming/BBN/arges.py)
-- [`/Users/seong/Desktop/Programming/BBN/Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Cleaned_Lung_Cancer_dataset.csv)
-- [`/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
+- [`../bbn_hybrid_learner/mmhc.py`](../bbn_hybrid_learner/mmhc.py)
+- [`../bbn_hybrid_learner/arges.py`](../bbn_hybrid_learner/arges.py)
+- [`Cleaned_Lung_Cancer_dataset.csv`](Cleaned_Lung_Cancer_dataset.csv)
+- [`../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
 
 The inspection suggested the following:
 
@@ -71,7 +71,7 @@ The existing dataset in the workspace was compared against the UCI Heart Disease
 
 ### 5.1 Raw cleaned dataset
 
-[`/Users/seong/Desktop/Programming/BBN/Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Cleaned_Lung_Cancer_dataset.csv)
+[`Cleaned_Lung_Cancer_dataset.csv`](Cleaned_Lung_Cancer_dataset.csv)
 
 - 193,219 rows
 - 11 columns
@@ -81,7 +81,7 @@ The existing dataset in the workspace was compared against the UCI Heart Disease
 
 ### 5.2 Recategorized dataset
 
-[`/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
+[`../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv)
 
 - 191,993 rows
 - 11 columns
@@ -98,7 +98,7 @@ Based on inspection of the current files, the recommended preprocessing plan for
 
 ### 6.1 Dataset choice
 
-Use [`/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](/Users/seong/Desktop/Programming/BBN/Recategorized_Cleaned_Lung_Cancer_dataset.csv) as the official experiment dataset.
+Use [`../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv`](../data/Recategorized_Cleaned_Lung_Cancer_dataset.csv) as the official experiment dataset.
 
 This choice avoids unnecessary re-discretization work and creates a more level comparison across methods.
 
@@ -140,7 +140,7 @@ The discussion highlighted that all three methods should be run under the same e
 
 ### 7.1 MMHC
 
-MMHC should be implemented using `bnlearn`. The existing [`/Users/seong/Desktop/Programming/BBN/mmhc.py`](/Users/seong/Desktop/Programming/BBN/mmhc.py) script should therefore be updated so that it both uses the shared preprocessing function and replaces any non-`bnlearn` structure-learning path with the intended `bnlearn`-based MMHC path.
+MMHC should be implemented using `bnlearn`. The existing [`../bbn_hybrid_learner/mmhc.py`](../bbn_hybrid_learner/mmhc.py) script should therefore be updated so that it both uses the shared preprocessing function and replaces any non-`bnlearn` structure-learning path with the intended `bnlearn`-based MMHC path.
 
 ### 7.2 H2PC
 

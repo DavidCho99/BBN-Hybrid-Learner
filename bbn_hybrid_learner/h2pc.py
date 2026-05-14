@@ -3,23 +3,23 @@ from __future__ import annotations
 import argparse
 import time
 
-from bnlearn_adapter import learn_mmhc_edges
-from evaluation import (
+from .bnlearn_adapter import learn_h2pc_edges
+from .evaluation import (
     build_bayesian_network,
     compute_bic_score,
     compute_prediction_metrics,
     fit_bayesian_network,
     summarize_result,
 )
-from preprocessing import DEFAULT_DATASET_PATH, TARGET_COLUMN, prepare_data
+from .preprocessing import DEFAULT_DATASET_PATH, TARGET_COLUMN, prepare_data
 
 
-def run_mmhc(file_path: str = str(DEFAULT_DATASET_PATH), sample_size: int | None = None) -> dict[str, object]:
+def run_h2pc(file_path: str = str(DEFAULT_DATASET_PATH), sample_size: int | None = None) -> dict[str, object]:
     total_start = time.time()
     prepared = prepare_data(file_path=file_path, sample_size=sample_size)
 
     structure_start = time.time()
-    edges = learn_mmhc_edges(prepared.train_df)
+    edges = learn_h2pc_edges(prepared.train_df)
     structure_runtime = time.time() - structure_start
 
     model = build_bayesian_network(edges=edges, nodes=prepared.train_df.columns)
@@ -35,7 +35,7 @@ def run_mmhc(file_path: str = str(DEFAULT_DATASET_PATH), sample_size: int | None
         notes = f"{notes} Prediction queries failed for {failed_queries} rows."
 
     result = summarize_result(
-        algorithm="MMHC (bnlearn)",
+        algorithm="H2PC (bnlearn)",
         dataset=prepared.dataset_path.name,
         train_df=prepared.train_df,
         test_df=prepared.test_df,
@@ -63,12 +63,12 @@ def run_mmhc(file_path: str = str(DEFAULT_DATASET_PATH), sample_size: int | None
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run MMHC with bnlearn.")
+    parser = argparse.ArgumentParser(description="Run H2PC with bnlearn.")
     parser.add_argument("--file-path", default=str(DEFAULT_DATASET_PATH))
     parser.add_argument("--sample-size", type=int, default=None)
     args = parser.parse_args()
 
-    outcome = run_mmhc(file_path=args.file_path, sample_size=args.sample_size)
+    outcome = run_h2pc(file_path=args.file_path, sample_size=args.sample_size)
     print(outcome["result"])
 
 

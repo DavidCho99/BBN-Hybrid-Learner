@@ -8,8 +8,8 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parent
-R_DRIVER_PATH = ROOT / "r_bnlearn_driver.R"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+R_DRIVER_PATH = PROJECT_ROOT / "r" / "r_bnlearn_driver.R"
 FALLBACK_RSCRIPT_PATHS = [
     Path("/opt/anaconda3/bin/Rscript"),
 ]

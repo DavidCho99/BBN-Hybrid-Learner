@@ -8,6 +8,11 @@ import numpy as np
 import pandas as pd
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SUMMARY_CSV = PROJECT_ROOT / "results" / "results_summary.csv"
+DEFAULT_OUTPUT_PNG = PROJECT_ROOT / "results" / "figures" / "head_to_head_results.png"
+
+
 def _setup_matplotlib() -> None:
     # Avoid warnings/errors when the default config dir isn't writable.
     mpl_dir = Path(tempfile.gettempdir()) / "mplconfig"
@@ -259,8 +264,8 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="Render a head-to-head results table PNG from results_summary.csv")
-    parser.add_argument("--summary-csv", default="results_summary.csv")
-    parser.add_argument("--output", default="head_to_head_results.png")
+    parser.add_argument("--summary-csv", default=str(DEFAULT_SUMMARY_CSV))
+    parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PNG))
     args = parser.parse_args()
 
     out = render_head_to_head_table(Path(args.summary_csv), Path(args.output))
@@ -269,4 +274,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
